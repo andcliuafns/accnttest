@@ -1,0 +1,146 @@
+
+  <h1>Inventory Cost Calculator</h1>
+
+  <form id="inventoryForm">
+    <label for="numUnits">Number of Units Sold:</label>
+    <input type="number" id="numUnits" required><br><br>
+
+    <h2>Inventory Batches</h2>
+    <div id="inventoryBatches">
+      <div class="batch">
+        <label>Units:</label>
+        <input type="number" class="units" required>
+        <label>Cost per Unit:</label>
+        <input type="number" class="cost" required><br><br>
+      </div>
+    </div>
+
+    <button type="button" class='btn btn-outline-primary' onclick="addBatch()">Add Another Batch</button><br><br>
+  </form>
+
+  <h2>Results</h2>
+  <div id="results">
+    <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
+    <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
+    <p>Average Cost: <span id="averageResult">0.00</span></p>
+  </div>
+
+  <hr>
+  <h1>Depreciation Calculator</h1>
+
+  <form id="depreciationCalculatorForm">
+    <label for="depreciationInitialCost">Initial Cost:</label>
+    <input type="number" id="depreciationInitialCost" required><br><br>
+
+    <label for="depreciationSalvageValue">Salvage Value (for Straight-Line):</label>
+    <input type="number" id="depreciationSalvageValue"><br><br>
+
+    <label for="depreciationUsefulLife">Useful Life (years):</label>
+    <input type="number" id="depreciationUsefulLife" required><br><br>
+
+    <button type="button" class='btn btn-outline-primary' onclick="calculateDepreciation()">Calculate Depreciation</button><br><br>
+  </form>
+
+  <h2>Results</h2>
+  <div id="depreciationResultsContainer">
+    <h3>Straight-Line Depreciation</h3>
+    <table border="1" id="straightLineDepreciationTable" class='table'>
+      <tr>
+        <th>Year</th>
+        <th>Depreciation Expense</th>
+        <th>Accumulated Depreciation</th>
+        <th>Book Value</th>
+      </tr>
+    </table>
+
+    <h3>Accelerated Depreciation (Double Declining Balance)</h3>
+    <table border="1" id="acceleratedDepreciationTable" class='table'>
+      <tr>
+        <th>Year</th>
+        <th>Depreciation Expense</th>
+        <th>Accumulated Depreciation</th>
+        <th>Book Value</th>
+      </tr>
+    </table>
+  </div>
+
+  <hr>
+      <h1>Return on Assets (ROA) Calculator</h1>
+    <label for="netIncome">Net Income:</label>
+    <input type="number" id="netIncome" step="0.01"><br><br>
+
+    <label for="assetsYearX">Assets (Year X):</label>
+    <input type="number" id="assetsYearX" step="0.01"><br><br>
+
+    <label for="assetsYearY">Assets (Year Y):</label>
+    <input type="number" id="assetsYearY" step="0.01"><br><br>
+
+    <button class='btn btn-outline-primary' onclick="calculateROA()">Calculate ROA</button>
+
+    <h2>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h2>
+
+
+    <hr>
+    formula for 
+    <h1>Tax and NOPAT Calculator</h1>
+    <label for="operatingIncome">Operating Income:</label>
+    <input type="number" id="operatingIncome" step="0.01"><br><br>
+
+    <label for="netInterest">Net Interest:</label>
+    <input type="number" id="netInterest" step="0.01"><br><br>
+
+    <label for="incomeTaxExpense">Income Tax Expense:</label>
+    <input type="number" id="incomeTaxExpense" step="0.01"><br><br>
+
+    <label for="netEarnings">Net Earnings:</label>
+    <input type="number" id="netEarnings" step="0.01"><br><br>
+
+    <label for="assumedTaxRate">Assumed Tax Rate (%):</label>
+    <input type="number" id="assumedTaxRate" step="0.01"><br><br>
+
+    <button class='btn btn-outline-primary' onclick="calculateTaxRateAndNOPAT()">Calculate</button>
+
+    <h2>Tax on Operating Profit (using Assumed Rate): <span id="taxAmountResult">N/A</span></h2>
+    <h2>Net Operating Profit After Tax (NOPAT): <span id="nopatResult">N/A</span></h2>
+
+    <hr>
+    NOA (net operating assets) = operating assets - operating liablities
+<h2>Non-Operating Assets:</h2>
+<ul>
+    <li>Cash and cash equivalents</li>
+    <li>Short-term investments</li>
+    <li>Long-term investments</li>
+    <li>Deferred income taxes – net</li>
+</ul>
+
+<h2>Operating Assets:</h2>
+<ul>
+    <li>Merchandise inventory – net</li>
+    <li>Other current assets</li>
+    <li>Property, less accumulated depreciation</li>
+    <li>Operating lease right of use assets</li>
+    <li>Other assets</li>
+</ul>
+
+<h2>Operating Liabilities:</h2>
+<ul>
+    <li>Current operating lease liabilities</li>
+    <li>Accounts payable</li>
+    <li>Accrued compensation and employee benefits</li>
+    <li>Deferred revenue</li>
+    <li>Other current liabilities</li>
+    <li>Noncurrent operating lease liabilities</li>
+</ul>
+
+<h2>Non-Operating Liabilities:</h2>
+<ul>
+    <li>Current maturities of long-term debt</li>
+    <li>Long-term debt, excluding current maturities</li>
+    <li>Deferred revenue - Lowe's protection plans</li>
+    <li>Other liabilities</li>
+</ul>
+
+<hr>
+RNOA = (return on non operating assets) = NOPAT/Avg. NOA <br>
+ROE = Operating return + Nonoperating return <br>
+Nonoperating return = ROE - Operating return

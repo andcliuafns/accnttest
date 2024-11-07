@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AccntTest</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+
+  
+    
+  </head>
+
+  <body>
+    <div class='container'>
+      <%= yield %>
+    </div>
+  </body>
+  <script>
+        function calculateTaxRateAndNOPAT() {
+            const operatingIncome = parseFloat(document.getElementById('operatingIncome').value);
+            const incomeTaxExpense = parseFloat(document.getElementById('incomeTaxExpense').value);
+            const netEarnings = parseFloat(document.getElementById('netEarnings').value);
+            const netInterest = parseFloat(document.getElementById('netInterest').value);
+            const assumedTaxRate = parseFloat(document.getElementById('assumedTaxRate').value) / 100; // Convert percentage to decimal
+
+            if (!isNaN(operatingIncome) && !isNaN(incomeTaxExpense) && !isNaN(netEarnings) && !isNaN(netInterest) && !isNaN(assumedTaxRate) && operatingIncome !== 0) {
+                // Calculate the effective tax rate
+                const effectiveTaxRate = assumedTaxRate;
+
+                // Calculate the tax on operating profit using the assumed tax rate
+                const taxAmount = incomeTaxExpense + (netInterest * assumedTaxRate);
+
+                // Calculate NOPAT
+                const nopat = (operatingIncome + netInterest) - taxAmount;
+
+        
+                document.getElementById('taxAmountResult').textContent = taxAmount.toFixed(2);
+                document.getElementById('nopatResult').textContent = nopat.toFixed(2);
+            } else {
+                document.getElementById('taxRateResult').textContent = 'Invalid input';
+                document.getElementById('taxAmountResult').textContent = 'Invalid input';
+                document.getElementById('nopatResult').textContent = 'Invalid input';
+            }
+        }
+    </script>
+    <script>
+        function calculateROA() {
+            const netIncome = parseFloat(document.getElementById('netIncome').value);
+            const assetsYearX = parseFloat(document.getElementById('assetsYearX').value);
+            const assetsYearY = parseFloat(document.getElementById('assetsYearY').value);
+
+            if (!isNaN(netIncome) && !isNaN(assetsYearX) && !isNaN(assetsYearY)) {
+                const averageAssets = (assetsYearX + assetsYearY) / 2;
+                const roa = (netIncome / averageAssets) * 100;
+
+                document.getElementById('roaResult').textContent = roa.toFixed(2);
+            } else {
+                document.getElementById('roaResult').textContent = 'Invalid input';
+            }
+        }
+    </script>
+  <script>
+    function calculateDepreciation() {
+      const initialCost = parseFloat(document.getElementById("depreciationInitialCost").value);
+      const salvageValue = parseFloat(document.getElementById("depreciationSalvageValue").value) || 0;
+      const usefulLife = parseFloat(document.getElementById("depreciationUsefulLife").value);
+
+      // Clear existing table data
+      document.getElementById("straightLineDepreciationTable").innerHTML = `
+        <tr>
+          <th>Year</th>
+          <th>Depreciation Expense</th>
+          <th>Accumulated Depreciation</th>
+          <th>Book Value</th>
+        </tr>`;
+      document.getElementById("acceleratedDepreciationTable").innerHTML = `
+        <tr>
+          <th>Year</th>
+          <th>Depreciation Expense</th>
+          <th>Accumulated Depreciation</th>
+          <th>Book Value</th>
+        </tr>`;
+
+      // Calculate Straight-Line Depreciation
+      const annualDepreciation = (initialCost - salvageValue) / usefulLife;
+      let accumulatedDepreciation = 0;
+
+      for (let year = 1; year <= usefulLife; year++) {
+        accumulatedDepreciation += annualDepreciation;
+        const bookValue = initialCost - accumulatedDepreciation;
+
+        document.getElementById("straightLineDepreciationTable").innerHTML += `
+          <tr>
+            <td>${year}</td>
+            <td>${annualDepreciation.toFixed(2)}</td>
+            <td>${accumulatedDepreciation.toFixed(2)}</td>
+            <td>${bookValue.toFixed(2)}</td>
+          </tr>`;
+      }
+
+      // Calculate Accelerated Depreciation (Double Declining Balance)
+      accumulatedDepreciation = 0;
+      let bookValue = initialCost;
+      const rate = (usefulLife/100);
+
+      for (let year = 1; year <= usefulLife; year++) {
+        const depreciationExpense = Math.min(bookValue * rate);
+        accumulatedDepreciation += depreciationExpense;
+        bookValue -= depreciationExpense;
+
+        document.getElementById("acceleratedDepreciationTable").innerHTML += `
+          <tr>
+            <td>${year}</td>
+            <td>${depreciationExpense.toFixed(2)}</td>
+            <td>${accumulatedDepreciation.toFixed(2)}</td>
+            <td>${Math.max(bookValue, salvageValue).toFixed(2)}</td>
+          </tr>`;
+
+        // Stop if the book value is at or below the salvage value
+        if (bookValue <= salvageValue) break;
+      }
+    }
+  </script>
+
+  <script>
+    // Function to add a new batch input row dynamically
+    function addBatch() {
+      const batchContainer = document.createElement('div');
+      batchContainer.classList.add('batch');
+      batchContainer.innerHTML = `
+        <label>Units:</label>
+        <input type="number" class="units" required>
+        <label>Cost per Unit:</label>
+        <input type="number" class="cost" required><br><br>
+      `;
+      document.getElementById('inventoryBatches').appendChild(batchContainer);
+      addInputListeners();  // Attach event listeners to new inputs
+    }
+
+    // Function to calculate costs dynamically
+    function calculateInventoryCosts() {
+      const numUnits = parseFloat(document.getElementById("numUnits").value) || 0;
+      let totalUnits = 0;
+      let totalCost = 0;
+      let fifoCost = 0;
+      let lifoCost = 0;
+      let remainingUnits = numUnits;
+
+      // Get all batches of units and costs
+      const batches = [];
+      document.querySelectorAll('.batch').forEach(batch => {
+        const units = parseFloat(batch.querySelector('.units').value) || 0;
+        const cost = parseFloat(batch.querySelector('.cost').value) || 0;
+        batches.push({ units, cost });
+        totalUnits += units;
+        totalCost += units * cost;
+      });
+
+      // Sort batches for FIFO (oldest first) and LIFO (newest first)
+      const fifoBatches = [...batches].sort((a, b) => a.cost - b.cost);
+      const lifoBatches = [...batches].sort((a, b) => b.cost - a.cost);
+
+      // Calculate FIFO cost
+      for (const batch of fifoBatches) {
+        if (remainingUnits <= 0) break;
+        const unitsToUse = Math.min(batch.units, remainingUnits);
+        fifoCost += unitsToUse * batch.cost;
+        remainingUnits -= unitsToUse;
+      }
+
+      // Reset remaining units for LIFO calculation
+      remainingUnits = numUnits;
+
+      // Calculate LIFO cost
+      for (const batch of lifoBatches) {
+        if (remainingUnits <= 0) break;
+        const unitsToUse = Math.min(batch.units, remainingUnits);
+        lifoCost += unitsToUse * batch.cost;
+        remainingUnits -= unitsToUse;
+      }
+
+      // Calculate Average Cost
+      const averageCostPerUnit = totalUnits ? totalCost / totalUnits : 0;
+      const averageCost = Math.min(numUnits, totalUnits) * averageCostPerUnit;
+
+      // Display the results
+      document.getElementById("fifoResult").textContent = fifoCost.toFixed(2);
+      document.getElementById("lifoResult").textContent = lifoCost.toFixed(2);
+      document.getElementById("averageResult").textContent = averageCost.toFixed(2);
+    }
+
+    // Function to add event listeners to inputs for real-time calculation
+    function addInputListeners() {
+      document.querySelectorAll('#numUnits, .units, .cost').forEach(input => {
+        input.addEventListener('input', calculateInventoryCosts);
+      });
+    }
+
+    // Initial call to set up event listeners on page load
+    addInputListeners();
+  </script>
+
+
+</html>
