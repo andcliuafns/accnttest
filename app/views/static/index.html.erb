@@ -232,7 +232,6 @@
     <p>Nonoperating Return = ROE - Operating Return</p>
 
 
-
     <script>
         function calculateDepreciationCustom() {
             const initialCost = parseFloat(document.getElementById('initialCostCustom').value);
@@ -270,9 +269,10 @@
                 </tr>
             `;
 
-            // Full subsequent years
-            for (let year = 1; year <= Math.ceil(usefulLifeYears); year++) {
-                let depreciationExpense = fullYearDepreciationSL;
+            // Full subsequent years, adjusting the last year
+            let lastYearDepreciationSL = fullYearDepreciationSL - (fullYearDepreciationSL * partialYearFactor);
+            for (let year = 1; year <= Math.floor(usefulLifeYears); year++) {
+                let depreciationExpense = year === Math.floor(usefulLifeYears) ? lastYearDepreciationSL : fullYearDepreciationSL;
                 accumulatedDepreciationSL += depreciationExpense;
                 bookValueSL -= depreciationExpense;
                 if (bookValueSL < salvageValue) {
@@ -312,7 +312,7 @@
             `;
 
             // Full subsequent years
-            for (let year = 1; year <= Math.ceil(usefulLifeYears); year++) {
+            for (let year = 1; year <= Math.floor(usefulLifeYears); year++) {
                 let depreciationExpense = bookValueDDB * doubleDecliningRate;
                 if (bookValueDDB - depreciationExpense < salvageValue) {
                     depreciationExpense = bookValueDDB - salvageValue; // Adjust to prevent going below salvage value
