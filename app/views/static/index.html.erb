@@ -1,60 +1,110 @@
-
-    <div class="mb-5">
-        <h1 class="mb-4">Inventory Cost Calculator</h1>
-        <form id="inventoryForm" class="mb-4">
-            <div class="mb-3">
-                <label for="numUnits" class="form-label">Number of Units Sold:</label>
-                <input type="number" id="numUnits" class="form-control" required>
-            </div>
-
-            <h2>Inventory Batches</h2>
-            <div id="inventoryBatches" class="mb-4">
-                <div class="batch mb-3">
-                    <label class="form-label">Units:</label>
-                    <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
-                    <label class="form-label">Cost per Unit:</label>
-                    <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+    <!-- Inventory Cost Calculator Card -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Inventory Cost Calculator</h2>
+        </div>
+        <div class="card-body">
+            <form id="inventoryForm">
+                <div class="mb-3">
+                    <label for="numUnits" class="form-label">Number of Units Sold:</label>
+                    <input type="number" id="numUnits" class="form-control" required>
                 </div>
+                <h3>Inventory Batches</h3>
+                <div id="inventoryBatches" class="mb-4">
+                    <div class="batch mb-3">
+                        <label class="form-label">Units:</label>
+                        <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
+                        <label class="form-label">Cost per Unit:</label>
+                        <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
+            </form>
+            <h3>Results</h3>
+            <div id="results">
+                <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
+                <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
+                <p>Average Cost: <span id="averageResult">0.00</span></p>
             </div>
-
-            <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
-        </form>
-
-        <h2>Results</h2>
-        <div id="results">
-            <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
-            <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
-            <p>Average Cost: <span id="averageResult">0.00</span></p>
         </div>
     </div>
 
-    <hr>
-
-    <div class="mb-5">
-        <h1 class="mb-4">Depreciation Calculator</h1>
-        <form id="depreciationCalculatorForm" class="mb-4">
-            <div class="mb-3">
-                <label for="depreciationInitialCost" class="form-label">Initial Cost:</label>
-                <input type="number" id="depreciationInitialCost" class="form-control" required>
+    <!-- Depreciation Calculator Card -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Depreciation Calculator</h2>
+        </div>
+        <div class="card-body">
+            <form id="depreciationCalculatorForm">
+                <div class="mb-3">
+                    <label for="depreciationInitialCost" class="form-label">Initial Cost:</label>
+                    <input type="number" id="depreciationInitialCost" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="depreciationSalvageValue" class="form-label">Salvage Value (for Straight-Line):</label>
+                    <input type="number" id="depreciationSalvageValue" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="depreciationUsefulLife" class="form-label">Useful Life (years):</label>
+                    <input type="number" id="depreciationUsefulLife" class="form-control" required>
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="calculateDepreciation()">Calculate Depreciation</button>
+            </form>
+            <h3>Results</h3>
+            <div id="depreciationResultsContainer">
+                <h4>Straight-Line Depreciation</h4>
+                <table class="table table-bordered" id="straightLineDepreciationTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Year</th>
+                            <th>Depreciation Expense</th>
+                            <th>Accumulated Depreciation</th>
+                            <th>Book Value</th>
+                        </tr>
+                    </thead>
+                </table>
+                <h4>Accelerated Depreciation (Double Declining Balance)</h4>
+                <table class="table table-bordered" id="acceleratedDepreciationTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Year</th>
+                            <th>Depreciation Expense</th>
+                            <th>Accumulated Depreciation</th>
+                            <th>Book Value</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
+        </div>
+    </div>
 
-            <div class="mb-3">
-                <label for="depreciationSalvageValue" class="form-label">Salvage Value (for Straight-Line):</label>
-                <input type="number" id="depreciationSalvageValue" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label for="depreciationUsefulLife" class="form-label">Useful Life (years):</label>
-                <input type="number" id="depreciationUsefulLife" class="form-control" required>
-            </div>
-
-            <button type="button" class="btn btn-outline-primary" onclick="calculateDepreciation()">Calculate Depreciation</button>
-        </form>
-
-        <h2>Results</h2>
-        <div id="depreciationResultsContainer">
-            <h3>Straight-Line Depreciation</h3>
-            <table class="table table-bordered" id="straightLineDepreciationTable">
+    <!-- Partial Year Depreciation Schedule Calculator Card -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Partial Year Depreciation Schedule Calculator</h2>
+        </div>
+        <div class="card-body">
+            <form id="depreciationFormCustom">
+                <div class="mb-3">
+                    <label for="initialCostCustom" class="form-label">Initial Cost:</label>
+                    <input type="number" id="initialCostCustom" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="salvageValueCustom" class="form-label">Salvage Value (for Straight-Line):</label>
+                    <input type="number" id="salvageValueCustom" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="usefulLifeMonthsCustom" class="form-label">Useful Life (months):</label>
+                    <input type="number" id="usefulLifeMonthsCustom" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="purchaseMonthCustom" class="form-label">Month of Purchase (1 for January, 2 for February, etc.):</label>
+                    <input type="number" id="purchaseMonthCustom" class="form-control" required min="1" max="12">
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="calculateDepreciationCustom()">Calculate Depreciation</button>
+            </form>
+            <h3>Straight-Line Depreciation Schedule</h3>
+            <table class="table table-bordered" id="straightLineTableCustom">
                 <thead class="table-dark">
                     <tr>
                         <th>Year</th>
@@ -63,10 +113,10 @@
                         <th>Book Value</th>
                     </tr>
                 </thead>
+                <tbody></tbody>
             </table>
-
-            <h3>Accelerated Depreciation (Double Declining Balance)</h3>
-            <table class="table table-bordered" id="acceleratedDepreciationTable">
+            <h3>Double Declining Balance Depreciation Schedule</h3>
+            <table class="table table-bordered" id="doubleDecliningTableCustom">
                 <thead class="table-dark">
                     <tr>
                         <th>Year</th>
@@ -75,117 +125,71 @@
                         <th>Book Value</th>
                     </tr>
                 </thead>
+                <tbody></tbody>
             </table>
         </div>
     </div>
 
-    <div class='mb-5'>
-    <h1>PARTIAL YEAR Depreciation Schedule Calculator</h1>
-    <form id="depreciationFormCustom" class="mb-4">
-        <div class="mb-3">
-            <label for="initialCostCustom" class="form-label">Initial Cost:</label>
-            <input type="number" id="initialCostCustom" class="form-control" required>
+    <!-- Return on Assets (ROA) Calculator Card -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Return on Assets (ROA) Calculator</h2>
         </div>
-        <div class="mb-3">
-            <label for="salvageValueCustom" class="form-label">Salvage Value (for Straight-Line):</label>
-            <input type="number" id="salvageValueCustom" class="form-control" required>
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label for="netIncome" class="form-label">Net Income:</label>
+                    <input type="number" id="netIncome" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="assetsYearX" class="form-label">Assets (Year X):</label>
+                    <input type="number" id="assetsYearX" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="assetsYearY" class="form-label">Assets (Year Y):</label>
+                    <input type="number" id="assetsYearY" class="form-control" step="0.01">
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="calculateROA()">Calculate ROA</button>
+            </form>
+            <h3>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h3>
         </div>
-        <div class="mb-3">
-            <label for="usefulLifeMonthsCustom" class="form-label">Useful Life (months):</label>
-            <input type="number" id="usefulLifeMonthsCustom" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="purchaseMonthCustom" class="form-label">Month of Purchase (1 for January, 2 for February, etc.):</label>
-            <input type="number" id="purchaseMonthCustom" class="form-control" required min="1" max="12">
-        </div>
-        <button type="button" class="btn btn-outline-primary" onclick="calculateDepreciationCustom()">Calculate Depreciation</button>
-    </form>
-
-    <h2>Straight-Line Depreciation Schedule</h2>
-    <table class="table table-bordered" id="straightLineTableCustom">
-        <thead class="table-dark">
-            <tr>
-                <th>Year</th>
-                <th>Depreciation Expense</th>
-                <th>Accumulated Depreciation</th>
-                <th>Book Value</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <h2>Double Declining Balance Depreciation Schedule</h2>
-    <table class="table table-bordered" id="doubleDecliningTableCustom">
-        <thead class="table-dark">
-            <tr>
-                <th>Year</th>
-                <th>Depreciation Expense</th>
-                <th>Accumulated Depreciation</th>
-                <th>Book Value</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    </div>
-    <hr>
-
-    <div class="mb-5">
-        <h1 class="mb-4">Return on Assets (ROA) Calculator</h1>
-        <div class="mb-3">
-            <label for="netIncome" class="form-label">Net Income:</label>
-            <input type="number" id="netIncome" class="form-control" step="0.01">
-        </div>
-
-        <div class="mb-3">
-            <label for="assetsYearX" class="form-label">Assets (Year X):</label>
-            <input type="number" id="assetsYearX" class="form-control" step="0.01">
-        </div>
-
-        <div class="mb-3">
-            <label for="assetsYearY" class="form-label">Assets (Year Y):</label>
-            <input type="number" id="assetsYearY" class="form-control" step="0.01">
-        </div>
-
-        <button class="btn btn-outline-primary mb-3" onclick="calculateROA()">Calculate ROA</button>
-        <h2>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h2>
     </div>
 
-    <hr>
-
-    <div class="mb-5">
-        <h1 class="mb-4">Tax and NOPAT Calculator</h1>
-        <div class="mb-3">
-            <label for="operatingIncome" class="form-label">Operating Income:</label>
-            <input type="number" id="operatingIncome" class="form-control" step="0.01">
+    <!-- Tax and NOPAT Calculator Card -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Tax and NOPAT Calculator</h2>
         </div>
-
-        <div class="mb-3">
-            <label for="netInterest" class="form-label">Net Interest:</label>
-            <input type="number" id="netInterest" class="form-control" step="0.01">
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label for="operatingIncome" class="form-label">Operating Income:</label>
+                    <input type="number" id="operatingIncome" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="netInterest" class="form-label">Net Interest:</label>
+                    <input type="number" id="netInterest" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="incomeTaxExpense" class="form-label">Income Tax Expense:</label>
+                    <input type="number" id="incomeTaxExpense" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="netEarnings" class="form-label">Net Earnings:</label>
+                    <input type="number" id="netEarnings" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="assumedTaxRate" class="form-label">Assumed Tax Rate (%):</label>
+                    <input type="number" id="assumedTaxRate" class="form-control" step="0.01">
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="calculateTaxRateAndNOPAT()">Calculate</button>
+            </form>
+            <h3>Tax on Operating Profit (using Assumed Rate): <span id="taxAmountResult">N/A</span></h3>
+            <h3>Net Operating Profit After Tax (NOPAT): <span id="nopatResult">N/A</span></h3>
         </div>
-
-        <div class="mb-3">
-            <label for="incomeTaxExpense" class="form-label">Income Tax Expense:</label>
-            <input type="number" id="incomeTaxExpense" class="form-control" step="0.01">
-        </div>
-
-        <div class="mb-3">
-            <label for="netEarnings" class="form-label">Net Earnings:</label>
-            <input type="number" id="netEarnings" class="form-control" step="0.01">
-        </div>
-
-        <div class="mb-3">
-            <label for="assumedTaxRate" class="form-label">Assumed Tax Rate (%):</label>
-            <input type="number" id="assumedTaxRate" class="form-control" step="0.01">
-        </div>
-
-        <button class="btn btn-outline-primary mb-3" onclick="calculateTaxRateAndNOPAT()">Calculate</button>
-        <h2>Tax on Operating Profit (using Assumed Rate): <span id="taxAmountResult">N/A</span></h2>
-        <h2>Net Operating Profit After Tax (NOPAT): <span id="nopatResult">N/A</span></h2>
     </div>
 
-    <hr>
+   <hr>
 
     <h1>Net Operating Assets (NOA) Breakdown</h1>
     <p>NOA = Operating Assets - Operating Liabilities</p>
@@ -230,8 +234,6 @@
     <p>RNOA = (Return on Net Operating Assets) = NOPAT / Avg. NOA</p>
     <p>ROE = Operating Return + Nonoperating Return</p>
     <p>Nonoperating Return = ROE - Operating Return</p>
-
-
     <script>
         function calculateDepreciationCustom() {
             const initialCost = parseFloat(document.getElementById('initialCostCustom').value);
