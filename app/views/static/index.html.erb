@@ -1,146 +1,183 @@
 
-  <h1>Inventory Cost Calculator</h1>
+    <div class="mb-5">
+        <h1 class="mb-4">Inventory Cost Calculator</h1>
+        <form id="inventoryForm" class="mb-4">
+            <div class="mb-3">
+                <label for="numUnits" class="form-label">Number of Units Sold:</label>
+                <input type="number" id="numUnits" class="form-control" required>
+            </div>
 
-  <form id="inventoryForm">
-    <label for="numUnits">Number of Units Sold:</label>
-    <input type="number" id="numUnits" required><br><br>
+            <h2>Inventory Batches</h2>
+            <div id="inventoryBatches" class="mb-4">
+                <div class="batch mb-3">
+                    <label class="form-label">Units:</label>
+                    <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
+                    <label class="form-label">Cost per Unit:</label>
+                    <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+                </div>
+            </div>
 
-    <h2>Inventory Batches</h2>
-    <div id="inventoryBatches">
-      <div class="batch">
-        <label>Units:</label>
-        <input type="number" class="units" required>
-        <label>Cost per Unit:</label>
-        <input type="number" class="cost" required><br><br>
-      </div>
+            <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
+        </form>
+
+        <h2>Results</h2>
+        <div id="results">
+            <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
+            <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
+            <p>Average Cost: <span id="averageResult">0.00</span></p>
+        </div>
     </div>
 
-    <button type="button" class='btn btn-outline-primary' onclick="addBatch()">Add Another Batch</button><br><br>
-  </form>
+    <hr>
 
-  <h2>Results</h2>
-  <div id="results">
-    <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
-    <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
-    <p>Average Cost: <span id="averageResult">0.00</span></p>
-  </div>
+    <div class="mb-5">
+        <h1 class="mb-4">Depreciation Calculator</h1>
+        <form id="depreciationCalculatorForm" class="mb-4">
+            <div class="mb-3">
+                <label for="depreciationInitialCost" class="form-label">Initial Cost:</label>
+                <input type="number" id="depreciationInitialCost" class="form-control" required>
+            </div>
 
-  <hr>
-  <h1>Depreciation Calculator</h1>
+            <div class="mb-3">
+                <label for="depreciationSalvageValue" class="form-label">Salvage Value (for Straight-Line):</label>
+                <input type="number" id="depreciationSalvageValue" class="form-control">
+            </div>
 
-  <form id="depreciationCalculatorForm">
-    <label for="depreciationInitialCost">Initial Cost:</label>
-    <input type="number" id="depreciationInitialCost" required><br><br>
+            <div class="mb-3">
+                <label for="depreciationUsefulLife" class="form-label">Useful Life (years):</label>
+                <input type="number" id="depreciationUsefulLife" class="form-control" required>
+            </div>
 
-    <label for="depreciationSalvageValue">Salvage Value (for Straight-Line):</label>
-    <input type="number" id="depreciationSalvageValue"><br><br>
+            <button type="button" class="btn btn-outline-primary" onclick="calculateDepreciation()">Calculate Depreciation</button>
+        </form>
 
-    <label for="depreciationUsefulLife">Useful Life (years):</label>
-    <input type="number" id="depreciationUsefulLife" required><br><br>
+        <h2>Results</h2>
+        <div id="depreciationResultsContainer">
+            <h3>Straight-Line Depreciation</h3>
+            <table class="table table-bordered" id="straightLineDepreciationTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Year</th>
+                        <th>Depreciation Expense</th>
+                        <th>Accumulated Depreciation</th>
+                        <th>Book Value</th>
+                    </tr>
+                </thead>
+            </table>
 
-    <button type="button" class='btn btn-outline-primary' onclick="calculateDepreciation()">Calculate Depreciation</button><br><br>
-  </form>
-
-  <h2>Results</h2>
-  <div id="depreciationResultsContainer">
-    <h3>Straight-Line Depreciation</h3>
-    <table border="1" id="straightLineDepreciationTable" class='table'>
-      <tr>
-        <th>Year</th>
-        <th>Depreciation Expense</th>
-        <th>Accumulated Depreciation</th>
-        <th>Book Value</th>
-      </tr>
-    </table>
-
-    <h3>Accelerated Depreciation (Double Declining Balance)</h3>
-    <table border="1" id="acceleratedDepreciationTable" class='table'>
-      <tr>
-        <th>Year</th>
-        <th>Depreciation Expense</th>
-        <th>Accumulated Depreciation</th>
-        <th>Book Value</th>
-      </tr>
-    </table>
-  </div>
-
-  <hr>
-      <h1>Return on Assets (ROA) Calculator</h1>
-    <label for="netIncome">Net Income:</label>
-    <input type="number" id="netIncome" step="0.01"><br><br>
-
-    <label for="assetsYearX">Assets (Year X):</label>
-    <input type="number" id="assetsYearX" step="0.01"><br><br>
-
-    <label for="assetsYearY">Assets (Year Y):</label>
-    <input type="number" id="assetsYearY" step="0.01"><br><br>
-
-    <button class='btn btn-outline-primary' onclick="calculateROA()">Calculate ROA</button>
-
-    <h2>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h2>
-
+            <h3>Accelerated Depreciation (Double Declining Balance)</h3>
+            <table class="table table-bordered" id="acceleratedDepreciationTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Year</th>
+                        <th>Depreciation Expense</th>
+                        <th>Accumulated Depreciation</th>
+                        <th>Book Value</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 
     <hr>
-    formula for 
-    <h1>Tax and NOPAT Calculator</h1>
-    <label for="operatingIncome">Operating Income:</label>
-    <input type="number" id="operatingIncome" step="0.01"><br><br>
 
-    <label for="netInterest">Net Interest:</label>
-    <input type="number" id="netInterest" step="0.01"><br><br>
+    <div class="mb-5">
+        <h1 class="mb-4">Return on Assets (ROA) Calculator</h1>
+        <div class="mb-3">
+            <label for="netIncome" class="form-label">Net Income:</label>
+            <input type="number" id="netIncome" class="form-control" step="0.01">
+        </div>
 
-    <label for="incomeTaxExpense">Income Tax Expense:</label>
-    <input type="number" id="incomeTaxExpense" step="0.01"><br><br>
+        <div class="mb-3">
+            <label for="assetsYearX" class="form-label">Assets (Year X):</label>
+            <input type="number" id="assetsYearX" class="form-control" step="0.01">
+        </div>
 
-    <label for="netEarnings">Net Earnings:</label>
-    <input type="number" id="netEarnings" step="0.01"><br><br>
+        <div class="mb-3">
+            <label for="assetsYearY" class="form-label">Assets (Year Y):</label>
+            <input type="number" id="assetsYearY" class="form-control" step="0.01">
+        </div>
 
-    <label for="assumedTaxRate">Assumed Tax Rate (%):</label>
-    <input type="number" id="assumedTaxRate" step="0.01"><br><br>
-
-    <button class='btn btn-outline-primary' onclick="calculateTaxRateAndNOPAT()">Calculate</button>
-
-    <h2>Tax on Operating Profit (using Assumed Rate): <span id="taxAmountResult">N/A</span></h2>
-    <h2>Net Operating Profit After Tax (NOPAT): <span id="nopatResult">N/A</span></h2>
+        <button class="btn btn-outline-primary mb-3" onclick="calculateROA()">Calculate ROA</button>
+        <h2>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h2>
+    </div>
 
     <hr>
-    NOA (net operating assets) = operating assets - operating liablities
-<h2>Non-Operating Assets:</h2>
-<ul>
-    <li>Cash and cash equivalents</li>
-    <li>Short-term investments</li>
-    <li>Long-term investments</li>
-    <li>Deferred income taxes – net</li>
-</ul>
 
-<h2>Operating Assets:</h2>
-<ul>
-    <li>Merchandise inventory – net</li>
-    <li>Other current assets</li>
-    <li>Property, less accumulated depreciation</li>
-    <li>Operating lease right of use assets</li>
-    <li>Other assets</li>
-</ul>
+    <div class="mb-5">
+        <h1 class="mb-4">Tax and NOPAT Calculator</h1>
+        <div class="mb-3">
+            <label for="operatingIncome" class="form-label">Operating Income:</label>
+            <input type="number" id="operatingIncome" class="form-control" step="0.01">
+        </div>
 
-<h2>Operating Liabilities:</h2>
-<ul>
-    <li>Current operating lease liabilities</li>
-    <li>Accounts payable</li>
-    <li>Accrued compensation and employee benefits</li>
-    <li>Deferred revenue</li>
-    <li>Other current liabilities</li>
-    <li>Noncurrent operating lease liabilities</li>
-</ul>
+        <div class="mb-3">
+            <label for="netInterest" class="form-label">Net Interest:</label>
+            <input type="number" id="netInterest" class="form-control" step="0.01">
+        </div>
 
-<h2>Non-Operating Liabilities:</h2>
-<ul>
-    <li>Current maturities of long-term debt</li>
-    <li>Long-term debt, excluding current maturities</li>
-    <li>Deferred revenue - Lowe's protection plans</li>
-    <li>Other liabilities</li>
-</ul>
+        <div class="mb-3">
+            <label for="incomeTaxExpense" class="form-label">Income Tax Expense:</label>
+            <input type="number" id="incomeTaxExpense" class="form-control" step="0.01">
+        </div>
 
-<hr>
-RNOA = (return on non operating assets) = NOPAT/Avg. NOA <br>
-ROE = Operating return + Nonoperating return <br>
-Nonoperating return = ROE - Operating return
+        <div class="mb-3">
+            <label for="netEarnings" class="form-label">Net Earnings:</label>
+            <input type="number" id="netEarnings" class="form-control" step="0.01">
+        </div>
+
+        <div class="mb-3">
+            <label for="assumedTaxRate" class="form-label">Assumed Tax Rate (%):</label>
+            <input type="number" id="assumedTaxRate" class="form-control" step="0.01">
+        </div>
+
+        <button class="btn btn-outline-primary mb-3" onclick="calculateTaxRateAndNOPAT()">Calculate</button>
+        <h2>Tax on Operating Profit (using Assumed Rate): <span id="taxAmountResult">N/A</span></h2>
+        <h2>Net Operating Profit After Tax (NOPAT): <span id="nopatResult">N/A</span></h2>
+    </div>
+
+    <hr>
+
+    <h1>Net Operating Assets (NOA) Breakdown</h1>
+    <p>NOA = Operating Assets - Operating Liabilities</p>
+
+    <h2>Non-Operating Assets:</h2>
+    <ul>
+        <li>Cash and cash equivalents</li>
+        <li>Short-term investments</li>
+        <li>Long-term investments</li>
+        <li>Deferred income taxes – net</li>
+    </ul>
+
+    <h2>Operating Assets:</h2>
+    <ul>
+        <li>Merchandise inventory – net</li>
+        <li>Other current assets</li>
+        <li>Property, less accumulated depreciation</li>
+        <li>Operating lease right of use assets</li>
+        <li>Other assets</li>
+    </ul>
+
+    <h2>Operating Liabilities:</h2>
+    <ul>
+        <li>Current operating lease liabilities</li>
+        <li>Accounts payable</li>
+        <li>Accrued compensation and employee benefits</li>
+        <li>Deferred revenue</li>
+        <li>Other current liabilities</li>
+        <li>Noncurrent operating lease liabilities</li>
+    </ul>
+
+    <h2>Non-Operating Liabilities:</h2>
+    <ul>
+        <li>Current maturities of long-term debt</li>
+        <li>Long-term debt, excluding current maturities</li>
+        <li>Deferred revenue - Lowe's protection plans</li>
+        <li>Other liabilities</li>
+    </ul>
+
+    <hr>
+    <h2>Formulas</h2>
+    <p>RNOA = (Return on Net Operating Assets) = NOPAT / Avg. NOA</p>
+    <p>ROE = Operating Return + Nonoperating Return</p>
+    <p>Nonoperating Return = ROE - Operating Return</p>
