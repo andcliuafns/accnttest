@@ -1,34 +1,34 @@
-    <!-- Inventory Cost Calculator Card -->
-    <div class="card mb-5">
-        <div class="card-header">
-            <h2>Inventory Cost Calculator</h2>
-        </div>
-        <div class="card-body">
-            <form id="inventoryForm">
-                <div class="mb-3">
-                    <label for="numUnits" class="form-label">Number of Units Sold:</label>
-                    <input type="number" id="numUnits" class="form-control" required>
-                </div>
-                <h3>Inventory Batches</h3>
-                <div id="inventoryBatches" class="mb-4">
-                    <div class="batch mb-3">
-                        <label class="form-label">Units:</label>
-                        <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
-                        <label class="form-label">Cost per Unit:</label>
-                        <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+        <div class="card mb-5">
+              <div class="card-header">
+                <h2>Inventory Cost Calculator</h2>
+            </div>
+            <div class="card-body">
+                <form id="inventoryForm">
+                    <div class="mb-3">
+                        <label for="numUnits" class="form-label">Number of Units Sold:</label>
+                        <input type="number" id="numUnits" class="form-control" required>
                     </div>
+                    <h3>Inventory Batches</h3>
+                    <div id="inventoryBatches" class="mb-4">
+                        <div class="batch mb-3">
+                            <label class="form-label">Units:</label>
+                            <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
+                            <label class="form-label">Cost per Unit:</label>
+                            <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
+                    <br>
+                    <button type="button" class="btn btn-success mb-3" onclick="calculateInventoryCosts()">Calculate Costs</button>
+                </form>
+                <h3>Results</h3>
+                <div id="results">
+                    <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
+                    <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
+                    <p>Average Cost: <span id="averageResult">0.00</span></p>
                 </div>
-                <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
-            </form>
-            <h3>Results</h3>
-            <div id="results">
-                <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
-                <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
-                <p>Average Cost: <span id="averageResult">0.00</span></p>
             </div>
         </div>
-    </div>
-
     <!-- Depreciation Calculator Card -->
     <div class="card mb-5">
         <div class="card-header">
@@ -234,107 +234,5 @@
     <p>RNOA = (Return on Net Operating Assets) = NOPAT / Avg. NOA</p>
     <p>ROE = Operating Return + Nonoperating Return</p>
     <p>Nonoperating Return = ROE - Operating Return</p>
-    <script>
-        function calculateDepreciationCustom() {
-            const initialCost = parseFloat(document.getElementById('initialCostCustom').value);
-            const salvageValue = parseFloat(document.getElementById('salvageValueCustom').value);
-            const usefulLifeMonths = parseFloat(document.getElementById('usefulLifeMonthsCustom').value);
-            const purchaseMonth = parseInt(document.getElementById('purchaseMonthCustom').value);
 
-            if (isNaN(initialCost) || isNaN(salvageValue) || isNaN(usefulLifeMonths) || isNaN(purchaseMonth)) {
-                alert("Please enter valid inputs for all fields.");
-                return;
-            }
-
-            const usefulLifeYears = usefulLifeMonths / 12; // Convert useful life in months to years
-            const partialYearFactor = (12 - (purchaseMonth - 1)) / 12; // Partial year from purchase month to end of the year
-
-            // Calculate straight-line depreciation schedule
-            const fullYearDepreciationSL = (initialCost - salvageValue) / usefulLifeYears;
-            let accumulatedDepreciationSL = 0;
-            let bookValueSL = initialCost;
-
-            let straightLineTableBody = document.querySelector('#straightLineTableCustom tbody');
-            straightLineTableBody.innerHTML = ''; // Clear previous data
-
-            // Year 0: Partial year
-            let year0DepreciationSL = fullYearDepreciationSL * partialYearFactor;
-            accumulatedDepreciationSL += year0DepreciationSL;
-            bookValueSL -= year0DepreciationSL;
-
-            straightLineTableBody.innerHTML += `
-                <tr>
-                    <td>Year 0 (Partial)</td>
-                    <td>${year0DepreciationSL.toFixed(2)}</td>
-                    <td>${accumulatedDepreciationSL.toFixed(2)}</td>
-                    <td>${bookValueSL.toFixed(2)}</td>
-                </tr>
-            `;
-
-            // Full subsequent years, adjusting the last year
-            let lastYearDepreciationSL = fullYearDepreciationSL - (fullYearDepreciationSL * partialYearFactor);
-            for (let year = 1; year <= Math.floor(usefulLifeYears); year++) {
-                let depreciationExpense = year === Math.floor(usefulLifeYears) ? lastYearDepreciationSL : fullYearDepreciationSL;
-                accumulatedDepreciationSL += depreciationExpense;
-                bookValueSL -= depreciationExpense;
-                if (bookValueSL < salvageValue) {
-                    bookValueSL = salvageValue; // Ensure book value does not go below salvage value
-                }
-
-                straightLineTableBody.innerHTML += `
-                    <tr>
-                        <td>Year ${year}</td>
-                        <td>${depreciationExpense.toFixed(2)}</td>
-                        <td>${accumulatedDepreciationSL.toFixed(2)}</td>
-                        <td>${bookValueSL.toFixed(2)}</td>
-                    </tr>
-                `;
-            }
-
-            // Calculate double declining balance depreciation schedule
-            const doubleDecliningRate = (2 / usefulLifeYears);
-            let accumulatedDepreciationDDB = 0;
-            let bookValueDDB = initialCost;
-
-            let doubleDecliningTableBody = document.querySelector('#doubleDecliningTableCustom tbody');
-            doubleDecliningTableBody.innerHTML = ''; // Clear previous data
-
-            // Year 0: Partial year
-            let year0DepreciationDDB = bookValueDDB * doubleDecliningRate * partialYearFactor;
-            accumulatedDepreciationDDB += year0DepreciationDDB;
-            bookValueDDB -= year0DepreciationDDB;
-
-            doubleDecliningTableBody.innerHTML += `
-                <tr>
-                    <td>Year 0 (Partial)</td>
-                    <td>${year0DepreciationDDB.toFixed(2)}</td>
-                    <td>${accumulatedDepreciationDDB.toFixed(2)}</td>
-                    <td>${bookValueDDB.toFixed(2)}</td>
-                </tr>
-            `;
-
-            // Full subsequent years
-            for (let year = 1; year <= Math.floor(usefulLifeYears); year++) {
-                let depreciationExpense = bookValueDDB * doubleDecliningRate;
-                if (bookValueDDB - depreciationExpense < salvageValue) {
-                    depreciationExpense = bookValueDDB - salvageValue; // Adjust to prevent going below salvage value
-                }
-                accumulatedDepreciationDDB += depreciationExpense;
-                bookValueDDB -= depreciationExpense;
-
-                doubleDecliningTableBody.innerHTML += `
-                    <tr>
-                        <td>Year ${year}</td>
-                        <td>${depreciationExpense.toFixed(2)}</td>
-                        <td>${accumulatedDepreciationDDB.toFixed(2)}</td>
-                        <td>${bookValueDDB.toFixed(2)}</td>
-                    </tr>
-                `;
-
-                if (bookValueDDB <= salvageValue) {
-                    bookValueDDB = salvageValue; // Ensure book value does not go below salvage value
-                    break;
-                }
-            }
-        }
-    </script>
+  </script>

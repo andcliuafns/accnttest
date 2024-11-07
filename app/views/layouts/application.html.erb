@@ -19,6 +19,177 @@
       <%= yield %>
     </div>
   </body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+
+   <script>
+        // Function to add a new batch input row dynamically
+        function addBatch() {
+            const batchContainer = document.createElement('div');
+            batchContainer.classList.add('batch', 'mb-3');
+            batchContainer.innerHTML = `
+                <label class="form-label">Units:</label>
+                <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
+                <label class="form-label">Cost per Unit:</label>
+                <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+            `;
+            document.getElementById('inventoryBatches').appendChild(batchContainer);
+        }
+
+        // Function to calculate costs when button is clicked
+        function calculateInventoryCosts() {
+            const numUnits = parseFloat(document.getElementById("numUnits").value) || 0;
+            let totalUnits = 0;
+            let totalCost = 0;
+            let fifoCost = 0;
+            let lifoCost = 0;
+            let remainingUnits = numUnits;
+
+            // Get all batches of units and costs
+            const batches = [];
+            document.querySelectorAll('.batch').forEach(batch => {
+                const units = parseFloat(batch.querySelector('.form-control:nth-child(2)').value) || 0;
+                const cost = parseFloat(batch.querySelector('.form-control:nth-child(4)').value) || 0;
+                batches.push({ units, cost });
+                totalUnits += units;
+                totalCost += units * cost;
+            });
+
+            // FIFO calculation (oldest first)
+            for (const batch of batches) {
+                if (remainingUnits <= 0) break;
+                const unitsToUse = Math.min(batch.units, remainingUnits);
+                fifoCost += unitsToUse * batch.cost;
+                remainingUnits -= unitsToUse;
+            }
+
+            // Reset remaining units for LIFO calculation
+            remainingUnits = numUnits;
+
+            // LIFO calculation (newest first)
+            for (const batch of batches.slice().reverse()) {
+                if (remainingUnits <= 0) break;
+                const unitsToUse = Math.min(batch.units, remainingUnits);
+                lifoCost += unitsToUse * batch.cost;
+                remainingUnits -= unitsToUse;
+            }
+
+            // Calculate Average Cost
+            const averageCostPerUnit = totalUnits ? totalCost / totalUnits : 0;
+            const averageCost = Math.min(numUnits, totalUnits) * averageCostPerUnit;
+
+            // Display the results
+            document.getElementById("fifoResult").textContent = fifoCost.toFixed(2);
+            document.getElementById("lifoResult").textContent = lifoCost.toFixed(2);
+            document.getElementById("averageResult").textContent = averageCost.toFixed(2);
+        }
+
+    </script>
+    <script>
+        function calculateDepreciationCustom() {
+            const initialCost = parseFloat(document.getElementById('initialCostCustom').value);
+            const salvageValue = parseFloat(document.getElementById('salvageValueCustom').value);
+            const usefulLifeMonths = parseFloat(document.getElementById('usefulLifeMonthsCustom').value);
+            const purchaseMonth = parseInt(document.getElementById('purchaseMonthCustom').value);
+
+            if (isNaN(initialCost) || isNaN(salvageValue) || isNaN(usefulLifeMonths) || isNaN(purchaseMonth)) {
+                alert("Please enter valid inputs for all fields.");
+                return;
+            }
+
+            const usefulLifeYears = usefulLifeMonths / 12; // Convert useful life in months to years
+            const partialYearFactor = (12 - (purchaseMonth - 1)) / 12; // Partial year from purchase month to end of the year
+
+            // Calculate straight-line depreciation schedule
+            const fullYearDepreciationSL = (initialCost - salvageValue) / usefulLifeYears;
+            let accumulatedDepreciationSL = 0;
+            let bookValueSL = initialCost;
+
+            let straightLineTableBody = document.querySelector('#straightLineTableCustom tbody');
+            straightLineTableBody.innerHTML = ''; // Clear previous data
+
+            // Year 0: Partial year
+            let year0DepreciationSL = fullYearDepreciationSL * partialYearFactor;
+            accumulatedDepreciationSL += year0DepreciationSL;
+            bookValueSL -= year0DepreciationSL;
+
+            straightLineTableBody.innerHTML += `
+                <tr>
+                    <td>Year 0 (Partial)</td>
+                    <td>${year0DepreciationSL.toFixed(2)}</td>
+                    <td>${accumulatedDepreciationSL.toFixed(2)}</td>
+                    <td>${bookValueSL.toFixed(2)}</td>
+                </tr>
+            `;
+
+            // Full subsequent years, adjusting the last year
+            let lastYearDepreciationSL = fullYearDepreciationSL - (fullYearDepreciationSL * partialYearFactor);
+            for (let year = 1; year <= Math.floor(usefulLifeYears); year++) {
+                let depreciationExpense = year === Math.floor(usefulLifeYears) ? lastYearDepreciationSL : fullYearDepreciationSL;
+                accumulatedDepreciationSL += depreciationExpense;
+                bookValueSL -= depreciationExpense;
+                if (bookValueSL < salvageValue) {
+                    bookValueSL = salvageValue; // Ensure book value does not go below salvage value
+                }
+
+                straightLineTableBody.innerHTML += `
+                    <tr>
+                        <td>Year ${year}</td>
+                        <td>${depreciationExpense.toFixed(2)}</td>
+                        <td>${accumulatedDepreciationSL.toFixed(2)}</td>
+                        <td>${bookValueSL.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+
+            // Calculate double declining balance depreciation schedule
+            const doubleDecliningRate = (2 / usefulLifeYears);
+            let accumulatedDepreciationDDB = 0;
+            let bookValueDDB = initialCost;
+
+            let doubleDecliningTableBody = document.querySelector('#doubleDecliningTableCustom tbody');
+            doubleDecliningTableBody.innerHTML = ''; // Clear previous data
+
+            // Year 0: Partial year
+            let year0DepreciationDDB = bookValueDDB * doubleDecliningRate * partialYearFactor;
+            accumulatedDepreciationDDB += year0DepreciationDDB;
+            bookValueDDB -= year0DepreciationDDB;
+
+            doubleDecliningTableBody.innerHTML += `
+                <tr>
+                    <td>Year 0 (Partial)</td>
+                    <td>${year0DepreciationDDB.toFixed(2)}</td>
+                    <td>${accumulatedDepreciationDDB.toFixed(2)}</td>
+                    <td>${bookValueDDB.toFixed(2)}</td>
+                </tr>
+            `;
+
+            // Full subsequent years
+            for (let year = 1; year <= Math.floor(usefulLifeYears); year++) {
+                let depreciationExpense = bookValueDDB * doubleDecliningRate;
+                if (bookValueDDB - depreciationExpense < salvageValue) {
+                    depreciationExpense = bookValueDDB - salvageValue; // Adjust to prevent going below salvage value
+                }
+                accumulatedDepreciationDDB += depreciationExpense;
+                bookValueDDB -= depreciationExpense;
+
+                doubleDecliningTableBody.innerHTML += `
+                    <tr>
+                        <td>Year ${year}</td>
+                        <td>${depreciationExpense.toFixed(2)}</td>
+                        <td>${accumulatedDepreciationDDB.toFixed(2)}</td>
+                        <td>${bookValueDDB.toFixed(2)}</td>
+                    </tr>
+                `;
+
+                if (bookValueDDB <= salvageValue) {
+                    bookValueDDB = salvageValue; // Ensure book value does not go below salvage value
+                    break;
+                }
+            }
+        }
+    </script>
   <script>
         function calculateTaxRateAndNOPAT() {
             const operatingIncome = parseFloat(document.getElementById('operatingIncome').value);
@@ -126,83 +297,7 @@
     }
   </script>
 
-  <script>
-    // Function to add a new batch input row dynamically
-    function addBatch() {
-      const batchContainer = document.createElement('div');
-      batchContainer.classList.add('batch');
-      batchContainer.innerHTML = `
-        <label>Units:</label>
-        <input type="number" class="units" required>
-        <label>Cost per Unit:</label>
-        <input type="number" class="cost" required><br><br>
-      `;
-      document.getElementById('inventoryBatches').appendChild(batchContainer);
-      addInputListeners();  // Attach event listeners to new inputs
-    }
 
-    // Function to calculate costs dynamically
-    function calculateInventoryCosts() {
-      const numUnits = parseFloat(document.getElementById("numUnits").value) || 0;
-      let totalUnits = 0;
-      let totalCost = 0;
-      let fifoCost = 0;
-      let lifoCost = 0;
-      let remainingUnits = numUnits;
-
-      // Get all batches of units and costs
-      const batches = [];
-      document.querySelectorAll('.batch').forEach(batch => {
-        const units = parseFloat(batch.querySelector('.units').value) || 0;
-        const cost = parseFloat(batch.querySelector('.cost').value) || 0;
-        batches.push({ units, cost });
-        totalUnits += units;
-        totalCost += units * cost;
-      });
-
-      // Sort batches for FIFO (oldest first) and LIFO (newest first)
-      const fifoBatches = [...batches].sort((a, b) => a.cost - b.cost);
-      const lifoBatches = [...batches].sort((a, b) => b.cost - a.cost);
-
-      // Calculate FIFO cost
-      for (const batch of fifoBatches) {
-        if (remainingUnits <= 0) break;
-        const unitsToUse = Math.min(batch.units, remainingUnits);
-        fifoCost += unitsToUse * batch.cost;
-        remainingUnits -= unitsToUse;
-      }
-
-      // Reset remaining units for LIFO calculation
-      remainingUnits = numUnits;
-
-      // Calculate LIFO cost
-      for (const batch of lifoBatches) {
-        if (remainingUnits <= 0) break;
-        const unitsToUse = Math.min(batch.units, remainingUnits);
-        lifoCost += unitsToUse * batch.cost;
-        remainingUnits -= unitsToUse;
-      }
-
-      // Calculate Average Cost
-      const averageCostPerUnit = totalUnits ? totalCost / totalUnits : 0;
-      const averageCost = Math.min(numUnits, totalUnits) * averageCostPerUnit;
-
-      // Display the results
-      document.getElementById("fifoResult").textContent = fifoCost.toFixed(2);
-      document.getElementById("lifoResult").textContent = lifoCost.toFixed(2);
-      document.getElementById("averageResult").textContent = averageCost.toFixed(2);
-    }
-
-    // Function to add event listeners to inputs for real-time calculation
-    function addInputListeners() {
-      document.querySelectorAll('#numUnits, .units, .cost').forEach(input => {
-        input.addEventListener('input', calculateInventoryCosts);
-      });
-    }
-
-    // Initial call to set up event listeners on page load
-    addInputListeners();
-  </script>
 
 
 </html>
