@@ -22,7 +22,43 @@
   <!DOCTYPE html>
 <html lang="en">
 <head>
+   <script>
+        function calculateRatios() {
+            const netIncome = parseFloat(document.getElementById('netIncome2').value);
+            const equityYear1 = parseFloat(document.getElementById('equityYear1').value);
+            const equityYear2 = parseFloat(document.getElementById('equityYear2').value);
+            const assetsYear1 = parseFloat(document.getElementById('assetsYear1').value);
+            const assetsYear2 = parseFloat(document.getElementById('assetsYear2').value);
+            const sales = parseFloat(document.getElementById('sales').value);
 
+            if (isNaN(netIncome) || isNaN(equityYear1) || isNaN(equityYear2) || isNaN(assetsYear1) || isNaN(assetsYear2) || isNaN(sales)) {
+                alert("Please enter valid numbers for all inputs.");
+                return;
+            }
+
+            // Calculate averages
+            const averageEquity = (equityYear1 + equityYear2) / 2;
+            const averageAssets = (assetsYear1 + assetsYear2) / 2;
+
+            // Calculate ROE
+            const roe = averageEquity !== 0 ? (netIncome / averageEquity) * 100 : 0;
+
+            // Calculate ROS
+            const ros = sales !== 0 ? (netIncome / sales) * 100 : 0;
+
+            // Calculate Asset Turnover
+            const assetTurnover = averageAssets !== 0 ? (sales / averageAssets) : 0;
+
+            // Calculate Financial Leverage
+            const financialLeverage = averageEquity !== 0 ? (averageAssets / averageEquity) : 0;
+
+            // Display results
+            document.getElementById('roeResult').textContent = roe.toFixed(2) + '%';
+            document.getElementById('rosResult').textContent = ros.toFixed(2) + '%';
+            document.getElementById('assetTurnoverResult').textContent = assetTurnover.toFixed(2);
+            document.getElementById('financialLeverageResult').textContent = financialLeverage.toFixed(2);
+        }
+    </script>
    <script>
         // Function to add a new batch input row dynamically
         function addBatch() {

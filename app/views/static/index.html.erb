@@ -1,34 +1,34 @@
-        <div class="card mb-5">
-              <div class="card-header">
-                <h2>Inventory Cost Calculator</h2>
-            </div>
-            <div class="card-body">
-                <form id="inventoryForm">
-                    <div class="mb-3">
-                        <label for="numUnits" class="form-label">Number of Units Sold:</label>
-                        <input type="number" id="numUnits" class="form-control" required>
-                    </div>
-                    <h3>Inventory Batches</h3>
-                    <div id="inventoryBatches" class="mb-4">
-                        <div class="batch mb-3">
-                            <label class="form-label">Units:</label>
-                            <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
-                            <label class="form-label">Cost per Unit:</label>
-                            <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
-                    <br>
-                    <button type="button" class="btn btn-success mb-3" onclick="calculateInventoryCosts()">Calculate Costs</button>
-                </form>
-                <h3>Results</h3>
-                <div id="results">
-                    <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
-                    <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
-                    <p>Average Cost: <span id="averageResult">0.00</span></p>
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Inventory Cost Calculator</h2>
+        </div>
+        <div class="card-body">
+            <form id="inventoryForm">
+                <div class="mb-3">
+                    <label for="numUnits" class="form-label">Number of Units Sold:</label>
+                    <input type="number" id="numUnits" class="form-control" required>
                 </div>
+                <h3>Inventory Batches</h3>
+                <div id="inventoryBatches" class="mb-4">
+                    <div class="batch mb-3">
+                        <label class="form-label">Units:</label>
+                        <input type="number" class="form-control d-inline-block mb-2" style="width: 150px;" required>
+                        <label class="form-label">Cost per Unit:</label>
+                        <input type="number" class="form-control d-inline-block" style="width: 150px;" required>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary mb-3" onclick="addBatch()">Add Another Batch</button>
+                <br>
+                <button type="button" class="btn btn-success mb-3" onclick="calculateInventoryCosts()">Calculate Costs</button>
+            </form>
+            <h3>Results</h3>
+            <div id="results">
+                <p>FIFO Cost: <span id="fifoResult">0.00</span></p>
+                <p>LIFO Cost: <span id="lifoResult">0.00</span></p>
+                <p>Average Cost: <span id="averageResult">0.00</span></p>
             </div>
         </div>
+    </div>
     <!-- Depreciation Calculator Card -->
     <div class="card mb-5">
         <div class="card-header">
@@ -130,30 +130,6 @@
         </div>
     </div>
 
-    <!-- Return on Assets (ROA) Calculator Card -->
-    <div class="card mb-5">
-        <div class="card-header">
-            <h2>Return on Assets (ROA) Calculator</h2>
-        </div>
-        <div class="card-body">
-            <form>
-                <div class="mb-3">
-                    <label for="netIncome" class="form-label">Net Income:</label>
-                    <input type="number" id="netIncome" class="form-control" step="0.01">
-                </div>
-                <div class="mb-3">
-                    <label for="assetsYearX" class="form-label">Assets (Year X):</label>
-                    <input type="number" id="assetsYearX" class="form-control" step="0.01">
-                </div>
-                <div class="mb-3">
-                    <label for="assetsYearY" class="form-label">Assets (Year Y):</label>
-                    <input type="number" id="assetsYearY" class="form-control" step="0.01">
-                </div>
-                <button type="button" class="btn btn-outline-primary" onclick="calculateROA()">Calculate ROA</button>
-            </form>
-            <h3>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h3>
-        </div>
-    </div>
 
     <!-- Tax and NOPAT Calculator Card -->
     <div class="card mb-5">
@@ -189,6 +165,78 @@
         </div>
     </div>
 
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Return on Assets (ROA)/h2>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label for="netIncome" class="form-label">Net Income:</label>
+                    <input type="number" id="netIncome" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="assetsYearX" class="form-label">Assets (Year X):</label>
+                    <input type="number" id="assetsYearX" class="form-control" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="assetsYearY" class="form-label">Assets (Year Y):</label>
+                    <input type="number" id="assetsYearY" class="form-control" step="0.01">
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="calculateROA()">Calculate ROA</button>
+            </form>
+            <h3>Return on Assets (ROA): <span id="roaResult">N/A</span>%</h3>
+        </div>
+    </div>
+
+    <div class='card mb-5'>
+      <div class='card-header'>
+        <h1>Return on Equity (ROE)</h1>
+      </div>
+      <div class='card-body'>
+        <form id="financialRatiosForm">
+            <div class="mb-3">
+                <label for="netIncome2" class="form-label">Net Income:</label>
+                <input type="number" id="netIncome2" class="form-control" step="0.01" required>
+            </div>
+
+            <h3>Stockholder Equity</h3>
+            <div class="mb-3">
+                <label for="equityYear1" class="form-label">Year 1 Stockholder Equity:</label>
+                <input type="number" id="equityYear1" class="form-control" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="equityYear2" class="form-label">Year 2 Stockholder Equity:</label>
+                <input type="number" id="equityYear2" class="form-control" step="0.01" required>
+            </div>
+
+            <h3>Assets</h3>
+            <div class="mb-3">
+                <label for="assetsYear1" class="form-label">Year 1 Assets:</label>
+                <input type="number" id="assetsYear1" class="form-control" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="assetsYear2" class="form-label">Year 2 Assets:</label>
+                <input type="number" id="assetsYear2" class="form-control" step="0.01" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="sales" class="form-label">Sales:</label>
+                <input type="number" id="sales" class="form-control" step="0.01" required>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="calculateRatios()">Calculate Ratios</button>
+        </form>
+
+        <h2>Results</h2>
+        ROE = ROS X A/T X FL
+        <br>
+        <p><span style='background-color:yellow;'>ROE (Return on Equity): <span id="roeResult">N/A</span></span></p>
+        <p>ROS (Return on Sales or Profit Margin): <span id="rosResult">N/A</span></p>
+        <p>Asset Turnover: <span id="assetTurnoverResult">N/A</span></p>
+        <p>Financial Leverage: <span id="financialLeverageResult">N/A</span></p>
+      </div>
+    </div>
    <hr>
 
     <h1>Net Operating Assets (NOA) Breakdown</h1>
@@ -235,4 +283,3 @@
     <p>ROE = Operating Return + Nonoperating Return</p>
     <p>Nonoperating Return = ROE - Operating Return</p>
 
-  </script>
