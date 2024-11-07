@@ -79,6 +79,55 @@
         </div>
     </div>
 
+    <div class='mb-5'>
+    <h1>PARTIAL YEAR Depreciation Schedule Calculator</h1>
+    <form id="depreciationFormCustom" class="mb-4">
+        <div class="mb-3">
+            <label for="initialCostCustom" class="form-label">Initial Cost:</label>
+            <input type="number" id="initialCostCustom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="salvageValueCustom" class="form-label">Salvage Value (for Straight-Line):</label>
+            <input type="number" id="salvageValueCustom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="usefulLifeMonthsCustom" class="form-label">Useful Life (months):</label>
+            <input type="number" id="usefulLifeMonthsCustom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="purchaseMonthCustom" class="form-label">Month of Purchase (1 for January, 2 for February, etc.):</label>
+            <input type="number" id="purchaseMonthCustom" class="form-control" required min="1" max="12">
+        </div>
+        <button type="button" class="btn btn-outline-primary" onclick="calculateDepreciationCustom()">Calculate Depreciation</button>
+    </form>
+
+    <h2>Straight-Line Depreciation Schedule</h2>
+    <table class="table table-bordered" id="straightLineTableCustom">
+        <thead class="table-dark">
+            <tr>
+                <th>Year</th>
+                <th>Depreciation Expense</th>
+                <th>Accumulated Depreciation</th>
+                <th>Book Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>Double Declining Balance Depreciation Schedule</h2>
+    <table class="table table-bordered" id="doubleDecliningTableCustom">
+        <thead class="table-dark">
+            <tr>
+                <th>Year</th>
+                <th>Depreciation Expense</th>
+                <th>Accumulated Depreciation</th>
+                <th>Book Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    </div>
     <hr>
 
     <div class="mb-5">
@@ -181,3 +230,109 @@
     <p>RNOA = (Return on Net Operating Assets) = NOPAT / Avg. NOA</p>
     <p>ROE = Operating Return + Nonoperating Return</p>
     <p>Nonoperating Return = ROE - Operating Return</p>
+
+
+
+    <script>
+        function calculateDepreciationCustom() {
+            const initialCost = parseFloat(document.getElementById('initialCostCustom').value);
+            const salvageValue = parseFloat(document.getElementById('salvageValueCustom').value);
+            const usefulLifeMonths = parseFloat(document.getElementById('usefulLifeMonthsCustom').value);
+            const purchaseMonth = parseInt(document.getElementById('purchaseMonthCustom').value);
+
+            if (isNaN(initialCost) || isNaN(salvageValue) || isNaN(usefulLifeMonths) || isNaN(purchaseMonth)) {
+                alert("Please enter valid inputs for all fields.");
+                return;
+            }
+
+            const usefulLifeYears = usefulLifeMonths / 12; // Convert useful life in months to years
+            const partialYearFactor = (12 - (purchaseMonth - 1)) / 12; // Partial year from purchase month to end of the year
+
+            // Calculate straight-line depreciation schedule
+            const fullYearDepreciationSL = (initialCost - salvageValue) / usefulLifeYears;
+            let accumulatedDepreciationSL = 0;
+            let bookValueSL = initialCost;
+
+            let straightLineTableBody = document.querySelector('#straightLineTableCustom tbody');
+            straightLineTableBody.innerHTML = ''; // Clear previous data
+
+            // Year 0: Partial year
+            let year0DepreciationSL = fullYearDepreciationSL * partialYearFactor;
+            accumulatedDepreciationSL += year0DepreciationSL;
+            bookValueSL -= year0DepreciationSL;
+
+            straightLineTableBody.innerHTML += `
+                <tr>
+                    <td>Year 0 (Partial)</td>
+                    <td>${year0DepreciationSL.toFixed(2)}</td>
+                    <td>${accumulatedDepreciationSL.toFixed(2)}</td>
+                    <td>${bookValueSL.toFixed(2)}</td>
+                </tr>
+            `;
+
+            // Full subsequent years
+            for (let year = 1; year <= Math.ceil(usefulLifeYears); year++) {
+                let depreciationExpense = fullYearDepreciationSL;
+                accumulatedDepreciationSL += depreciationExpense;
+                bookValueSL -= depreciationExpense;
+                if (bookValueSL < salvageValue) {
+                    bookValueSL = salvageValue; // Ensure book value does not go below salvage value
+                }
+
+                straightLineTableBody.innerHTML += `
+                    <tr>
+                        <td>Year ${year}</td>
+                        <td>${depreciationExpense.toFixed(2)}</td>
+                        <td>${accumulatedDepreciationSL.toFixed(2)}</td>
+                        <td>${bookValueSL.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+
+            // Calculate double declining balance depreciation schedule
+            const doubleDecliningRate = (2 / usefulLifeYears);
+            let accumulatedDepreciationDDB = 0;
+            let bookValueDDB = initialCost;
+
+            let doubleDecliningTableBody = document.querySelector('#doubleDecliningTableCustom tbody');
+            doubleDecliningTableBody.innerHTML = ''; // Clear previous data
+
+            // Year 0: Partial year
+            let year0DepreciationDDB = bookValueDDB * doubleDecliningRate * partialYearFactor;
+            accumulatedDepreciationDDB += year0DepreciationDDB;
+            bookValueDDB -= year0DepreciationDDB;
+
+            doubleDecliningTableBody.innerHTML += `
+                <tr>
+                    <td>Year 0 (Partial)</td>
+                    <td>${year0DepreciationDDB.toFixed(2)}</td>
+                    <td>${accumulatedDepreciationDDB.toFixed(2)}</td>
+                    <td>${bookValueDDB.toFixed(2)}</td>
+                </tr>
+            `;
+
+            // Full subsequent years
+            for (let year = 1; year <= Math.ceil(usefulLifeYears); year++) {
+                let depreciationExpense = bookValueDDB * doubleDecliningRate;
+                if (bookValueDDB - depreciationExpense < salvageValue) {
+                    depreciationExpense = bookValueDDB - salvageValue; // Adjust to prevent going below salvage value
+                }
+                accumulatedDepreciationDDB += depreciationExpense;
+                bookValueDDB -= depreciationExpense;
+
+                doubleDecliningTableBody.innerHTML += `
+                    <tr>
+                        <td>Year ${year}</td>
+                        <td>${depreciationExpense.toFixed(2)}</td>
+                        <td>${accumulatedDepreciationDDB.toFixed(2)}</td>
+                        <td>${bookValueDDB.toFixed(2)}</td>
+                    </tr>
+                `;
+
+                if (bookValueDDB <= salvageValue) {
+                    bookValueDDB = salvageValue; // Ensure book value does not go below salvage value
+                    break;
+                }
+            }
+        }
+    </script>
