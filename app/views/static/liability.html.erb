@@ -1,0 +1,139 @@
+
+<h1>Liabilities</h1>
+<p>
+	Debt; shareholders get paid after creditors. 
+	<br>
+</p>
+<h2>Current vs non-current (1 year vs > 1 year)</h2>
+Operating -> Firms ongoing operations <br>
+<h4>Current</h4>
+<table class='table table-sm' style='width:50%;'>
+	<thead>
+		<th>Operating</th>
+		<th>Non-operating</th>
+	</thead>
+	<tbody>
+		<tr><td>Accounts payable</td><td></td></tr>
+		<tr><td>Accrued liabilities</td><td></td></tr>
+		<tr><td>Unearned rev</td><td></td></tr>
+		<tr><td></td><td>Dividends payable</td></tr>
+		<tr><td></td><td>Short-term debt</td></tr>
+	</tbody>
+</table>
+
+
+<h4>Non-current</h4>
+<table class='table table-sm' style='width:50%;'>
+	<thead>
+		<th>Operating</th>
+		<th>Non-operating</th>
+	</thead>
+	<tbody>
+	<tr><td></td><td>Bonds payable</td></tr>
+	<tr><td></td><td>Pension obligation</td></tr>
+	<tr><td></td><td>Operating lease obligation</td></tr>
+	<tr><td>Capital lease obligation</td><td></td></tr>
+	<tr><td>Deferred taxes</td><td></td></tr>
+	</tbody>
+</table>
+<hr>
+<h2>Bond Valuation Calculator</h2>
+
+<form id="bondForm">
+    <label for="principal">Principal Amount:</label>
+    <input type="number" id="principal" required><br>
+
+    <label for="interestRate">Annual Interest Rate (%):</label>
+    <input type="number" step="0.01" id="interestRate" required><br>
+
+    <label for="paymentsPerYear">Interest Payments Per Year:</label>
+    <input type="number" id="paymentsPerYear" required><br>
+
+    <label for="requiredYield">Required Yield (%):</label>
+    <input type="number" step="0.01" id="requiredYield" required><br>
+
+    <label for="issueDate">Issue Date:</label>
+    <input type="date" id="issueDate" required><br>
+
+    <label for="maturityDate">Maturity Date:</label>
+    <input type="date" id="maturityDate" required><br>
+
+    <button type="button" class='btn btn-primary' onclick="calculateBond()">Calculate</button>
+</form>
+
+<h3>Results</h3>
+<table id="resultTable" class='table' border="1">
+    <thead>
+        <tr>
+            <th>Period</th>
+            <th>Payment</th>
+            <th>Discount Factor</th>
+            <th>Present Value</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+function calculateBond() {
+    // Get input values and parse them
+    const principal = parseFloat(document.getElementById("principal").value);
+    const interestRate = parseFloat(document.getElementById("interestRate").value) / 100;
+    const paymentsPerYear = parseInt(document.getElementById("paymentsPerYear").value);
+    const requiredYield = parseFloat(document.getElementById("requiredYield").value) / 100;
+    const issueDate = new Date(document.getElementById("issueDate").value);
+    const maturityDate = new Date(document.getElementById("maturityDate").value);
+
+    // Ensure all inputs are valid
+    if (isNaN(principal) || isNaN(interestRate) || isNaN(paymentsPerYear) || isNaN(requiredYield) || !issueDate || !maturityDate) {
+        alert("Please fill in all fields with valid values.");
+        return;
+    }
+
+    // Calculate number of periods
+    const totalYears = (maturityDate - issueDate) / (1000 * 60 * 60 * 24 * 365);
+    const totalPeriods = Math.ceil(totalYears * paymentsPerYear);
+
+    // Calculate the payment per period
+    const payment = (principal * interestRate) / paymentsPerYear;
+
+    // Clear previous results
+    const resultTableBody = document.getElementById("resultTable").getElementsByTagName("tbody")[0];
+    resultTableBody.innerHTML = "";
+
+    // Calculate each period's discount factor and present value
+    for (let period = 1; period <= totalPeriods; period++) {
+        // Calculate the discount factor
+        const discountFactor = 1 / Math.pow(1 + requiredYield / paymentsPerYear, period);
+
+        // Calculate the present value of the payment
+        const presentValue = payment * discountFactor;
+
+        // Create a new row for the table
+        const row = document.createElement("tr");
+
+        // Add period
+        const periodCell = document.createElement("td");
+        periodCell.textContent = period;
+        row.appendChild(periodCell);
+
+        // Add payment
+        const paymentCell = document.createElement("td");
+        paymentCell.textContent = payment.toFixed(2);
+        row.appendChild(paymentCell);
+
+        // Add discount factor
+        const discountFactorCell = document.createElement("td");
+        discountFactorCell.textContent = discountFactor.toFixed(4);
+        row.appendChild(discountFactorCell);
+
+        // Add present value
+        const presentValueCell = document.createElement("td");
+        presentValueCell.textContent = presentValue.toFixed(2);
+        row.appendChild(presentValueCell);
+
+        // Append the row to the table body
+        resultTableBody.appendChild(row);
+    }
+}
+</script>
