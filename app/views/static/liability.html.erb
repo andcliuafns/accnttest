@@ -37,10 +37,12 @@ Operating -> Firms ongoing operations <br>
 	</tbody>
 </table>
 <hr>
+
+
 <h2>Bond Valuation Calculator</h2>
 
 <form id="bondForm">
-    <label for="principal">Principal Amount:</label>
+    <label for="principal">Principal Amount ($ millions):</label>
     <input type="number" id="principal" required><br>
 
     <label for="interestRate">Annual Interest Rate (%):</label>
@@ -61,18 +63,29 @@ Operating -> Firms ongoing operations <br>
     <button type="button" class='btn btn-primary' onclick="calculateBond()">Calculate</button>
 </form>
 
-<h3>Results</h3>
-<table id="resultTable" class='table' border="1">
-    <thead>
-        <tr>
-            <th>Period</th>
-            <th>Payment</th>
-            <th>Discount Factor</th>
-            <th>Present Value</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<div class='row'>
+	<div class='col-sm-5'>
+		<h3>Results</h3>
+		<table id="resultTable" class='table table-sm' border="1">
+		    <thead>
+		        <tr>
+		            <th>Period</th>
+		            <th>Payment</th>
+		            <th>Discount Factor</th>
+		            <th>Present Value</th>
+		        </tr>
+		    </thead>
+		    <tbody></tbody>
+		</table>
+	</div>
+	<div class='col-sm-7'>
+		<h3>Summary</h3>
+		<p><strong>Lenders' Payment for Notes (Present Value):</strong> $<span id="lendersPayment">0</span> million</p>
+		<p><strong>Cash Interest Payment:</strong> $<span id="cashInterest">0</span> million</p>
+		<p><strong>Book Value of the Notes at Maturity:</strong> $<span id="bookValue">0</span> million</p>
+	</div>
+</div>
+
 
 <script>
 function calculateBond() {
@@ -94,20 +107,24 @@ function calculateBond() {
     const totalYears = (maturityDate - issueDate) / (1000 * 60 * 60 * 24 * 365);
     const totalPeriods = Math.ceil(totalYears * paymentsPerYear);
 
-    // Calculate the payment per period
+    // Calculate the payment per period (Cash Interest Payment)
     const payment = (principal * interestRate) / paymentsPerYear;
+    document.getElementById("cashInterest").textContent = payment.toFixed(2);
 
     // Clear previous results
     const resultTableBody = document.getElementById("resultTable").getElementsByTagName("tbody")[0];
     resultTableBody.innerHTML = "";
 
-    // Calculate each period's discount factor and present value
+    // Calculate each period's discount factor and present value, and the total present value
+    let totalPresentValue = 0;
+
     for (let period = 1; period <= totalPeriods; period++) {
         // Calculate the discount factor
         const discountFactor = 1 / Math.pow(1 + requiredYield / paymentsPerYear, period);
 
         // Calculate the present value of the payment
         const presentValue = payment * discountFactor;
+        totalPresentValue += presentValue;
 
         // Create a new row for the table
         const row = document.createElement("tr");
@@ -135,5 +152,16 @@ function calculateBond() {
         // Append the row to the table body
         resultTableBody.appendChild(row);
     }
+
+    // Calculate the present value of the principal at maturity and add it to the total present value
+    const principalDiscountFactor = 1 / Math.pow(1 + requiredYield / paymentsPerYear, totalPeriods);
+    const principalPresentValue = principal * principalDiscountFactor;
+    totalPresentValue += principalPresentValue;
+
+    // Display results
+    document.getElementById("lendersPayment").textContent = totalPresentValue.toFixed(2);
+    document.getElementById("bookValue").textContent = principal.toFixed(2);  // Book value at maturity
 }
 </script>
+
+
